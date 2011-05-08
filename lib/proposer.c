@@ -121,15 +121,15 @@ static void
 pro_save_prepare_ack(p_inst_info * ii, prepare_ack * pa, short int acceptor_id) {
     
     //Ack from already received!
-    if(ii->promises_bitvector & (1<acceptor_id)) {
-        LOG(DBG, ("Dropping duplicate promise from:%d, iid:%ld, \n", acceptor_id, ii->iid));
+    if(ii->promises_bitvector & (1<<acceptor_id)) {
+        LOG(DBG, ("Dropping duplicate promise from:%d, iid:%u, \n", acceptor_id, ii->iid));
         return;
     }
     
     // promise is new
-    ii->promises_bitvector &= (1<acceptor_id);
+    ii->promises_bitvector &= (1<<acceptor_id);
     ii->promises_count++;
-    LOG(DBG, ("Received valid promise from:%d, iid:%ld, \n", acceptor_id, ii->iid));
+    LOG(DBG, ("Received valid promise from:%d, iid:%u, \n", acceptor_id, ii->iid));
     
     //Promise contains no value
     if(pa->value_size == 0) {
@@ -170,7 +170,7 @@ pro_save_prepare_ack(p_inst_info * ii, prepare_ack * pa, short int acceptor_id) 
 
 void 
 pro_deliver_callback(char * value, size_t size, iid_t iid, ballot_t ballot, int proposer) {
-    LOG(DBG, ("Instance iid:%ld delivered to proposer\n", iid));
+    LOG(DBG, ("Instance iid:%u delivered to proposer\n", iid));
     
     //If leader, take the appropriate action
     if(LEADER_IS_ME) {
@@ -191,13 +191,13 @@ handle_prepare_ack(prepare_ack * pa, short int acceptor_id) {
     p_inst_info * ii = GET_PRO_INSTANCE(pa->iid);
     // If not p1_pending, drop
     if(ii->status != p1_pending) {
-        LOG(DBG, ("Promise dropped, iid:%ld not pending\n", pa->iid));
+        LOG(DBG, ("Promise dropped, iid:%u not pending\n", pa->iid));
         return 0;
     }
     
     // If not our ballot, drop
     if(pa->ballot != ii->my_ballot) {
-        LOG(DBG, ("Promise dropped, iid:%ld not our ballot\n", pa->iid));
+        LOG(DBG, ("Promise dropped, iid:%u not our ballot\n", pa->iid));
         return 0;
     }
     
@@ -207,7 +207,7 @@ handle_prepare_ack(prepare_ack * pa, short int acceptor_id) {
     
     //Not a majority yet for this instance
     if(ii->promises_count < QUORUM) {
-        LOG(DBG, ("Not yet a quorum for iid:%ld\n", pa->iid));
+        LOG(DBG, ("Not yet a quorum for iid:%u\n", pa->iid));
         return 0;
     }
     
@@ -216,7 +216,7 @@ handle_prepare_ack(prepare_ack * pa, short int acceptor_id) {
     p1_info.pending_count -= 1;
     p1_info.ready_count += 1;
 
-    LOG(DBG, ("Quorum for iid:%ld reached\n", pa->iid));
+    LOG(DBG, ("Quorum for iid:%lu reached\n", pa->iid));
     
     return 1;
 }
