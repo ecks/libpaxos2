@@ -1,6 +1,7 @@
 #ifndef _LIBPAXOS_H_
 #define _LIBPAXOS_H_
 #include <sys/types.h>
+#include <stdint.h>
 #include "paxos_config.h"
 
 /* 
@@ -15,7 +16,7 @@
     Alias for instance identificator and ballot number.
 */
 typedef unsigned int ballot_t;
-typedef long unsigned int iid_t;
+typedef uint32_t iid_t;
 
 /* 
     When starting a learner you must pass a function to be invoked whenever

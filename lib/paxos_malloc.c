@@ -6,11 +6,10 @@
 static FILE* debug_f = NULL;
 
 //Open the file for writing malloc/free traces
-int open_debug_file() {
+void open_debug_file() {
     if (debug_f == NULL) {
         debug_f = fopen(MALLOC_TRACE_FILENAME, "w");
     }
-    return (int)debug_f;
 }
 
 //Close the file for writing malloc/free traces

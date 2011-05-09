@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Edit this accordingly
-PROJ_DIR="/Users/bridge/Desktop/mthesis/trunk/libpaxos2/tests" 
+PROJ_DIR="/Users/bridge/blackcode/SourceForge/libpaxos/trunk/libpaxos2/tests" 
 
 
 if [[ ! -e $PROJ_DIR ]]; then

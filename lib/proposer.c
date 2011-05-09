@@ -216,7 +216,7 @@ handle_prepare_ack(prepare_ack * pa, short int acceptor_id) {
     p1_info.pending_count -= 1;
     p1_info.ready_count += 1;
 
-    LOG(DBG, ("Quorum for iid:%lu reached\n", pa->iid));
+    LOG(DBG, ("Quorum for iid:%u reached\n", pa->iid));
     
     return 1;
 }

@@ -32,17 +32,17 @@ leader_print_event_counters(int fd, short event, void *arg) {
     UNUSED_ARG(event);
     UNUSED_ARG(arg);
     printf("-----------------------------------------------\n");
-    printf("current_iid:%lu\n", current_iid);
+    printf("current_iid:%u\n", current_iid);
     printf("Phase 1_____________________:\n");
     printf("p1_timeout:%lu\n", lead_counters.p1_timeout);
     printf("p1_info.pending_count:%u\n", p1_info.pending_count);
     printf("p1_info.ready_count:%u\n", p1_info.ready_count);
-    printf("p1_info.highest_open:%lu\n", p1_info.highest_open);
+    printf("p1_info.highest_open:%u\n", p1_info.highest_open);
     printf("Phase 2_____________________:\n");    
     printf("p2_timeout:%lu\n", lead_counters.p2_timeout);
     printf("p2_waits_p1:%lu\n", lead_counters.p2_waits_p1);
     printf("p2_info.open_count:%u\n", p2_info.open_count);
-    printf("p2_info.next_unused_iid:%lu\n", p2_info.next_unused_iid);
+    printf("p2_info.next_unused_iid:%u\n", p2_info.next_unused_iid);
     printf("Misc._______________________:\n");
     printf("dropped_count:%lu\n", vh_get_dropped_count());
     printf("-----------------------------------------------\n");
@@ -103,7 +103,7 @@ leader_check_p1_pending() {
 
     //Create an empty prepare batch in send buffer
     sendbuf_clear(to_acceptors, prepare_reqs, this_proposer_id);
-    LOG(DBG, ("Checking pending phase 1 from %lu to %lu\n",
+    LOG(DBG, ("Checking pending phase 1 from %u to %u\n",
         current_iid, p1_info.highest_open));
     
     //Get current time for checking expired    
@@ -119,7 +119,7 @@ leader_check_p1_pending() {
         
         //Still pending -> it's expired
         if(ii->status == p1_pending && leader_is_expired(&ii->timeout, &time_now)) {
-            LOG(DBG, ("Phase 1 of instance %ld expired!\n", ii->iid));
+            LOG(DBG, ("Phase 1 of instance %u expired!\n", ii->iid));
 
             //Reset fields used for previous phase 1
             ii->promises_bitvector = 0;
@@ -358,7 +358,7 @@ leader_open_instances_p2_new() {
         
         //Next unused is not ready, stop
         if(ii->status != p1_ready || ii->iid != p2_info.next_unused_iid) {
-            LOG(DBG, ("Next instance to use for P2 (iid:%lu) is not ready yet\n", p2_info.next_unused_iid));
+            LOG(DBG, ("Next instance to use for P2 (iid:%u) is not ready yet\n", p2_info.next_unused_iid));
             COUNT_EVENT(p2_waits_p1);
             break;
         }
@@ -415,7 +415,7 @@ leader_periodic_p2_check(int fd, short event, void *arg) {
             p2_info.open_count -= 1;
             //The rest (i.e. answering client)
             // is done when the value is actually delivered
-            LOG(VRB, ("Instance %lu closed, waiting for deliver\n", i));
+            LOG(VRB, ("Instance %u closed, waiting for deliver\n", i));
             continue;
         }
         
@@ -432,7 +432,7 @@ leader_periodic_p2_check(int fd, short event, void *arg) {
         sendbuf_add_prepare_req(to_acceptors, ii->iid, ii->my_ballot);
         leader_set_expiration(ii, P1_TIMEOUT_INTERVAL);
         
-        LOG(VRB, ("Instance %lu restarts from phase 1\n", i));
+        LOG(VRB, ("Instance %u restarts from phase 1\n", i));
 
         COUNT_EVENT(p2_timeout);
 
@@ -456,7 +456,7 @@ static void
 leader_deliver(char * value, size_t size, iid_t iid, ballot_t ballot, int proposer) {
     UNUSED_ARG(ballot);
     UNUSED_ARG(proposer);
-    LOG(DBG, ("Instance %lu delivered to Leader\n", iid));
+    LOG(DBG, ("Instance %u delivered to Leader\n", iid));
 
     //Verify that the value is the one found or associated
     p_inst_info * ii = GET_PRO_INSTANCE(iid);

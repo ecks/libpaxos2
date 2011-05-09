@@ -19,7 +19,7 @@ static char as_char(char c) {
 }
 
 void my_deliver_fun(char* value, size_t value_size, iid_t iid, ballot_t ballot, int proposer) {
-    printf("Paxos instance %lu closed by ballot %u\n", iid, ballot);
+    printf("Paxos instance %u closed by ballot %u\n", iid, ballot);
     printf("Value (by proposer:%d, size: %d) ->", proposer, (int)value_size);
     printf("[%c][%c][%c][...]\n", as_char(value[0]), as_char(value[1]), as_char(value[2]));
 }

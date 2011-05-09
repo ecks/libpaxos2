@@ -135,7 +135,7 @@ ab_handle_repeat_req_batch(repeat_req_batch * rrb) {
         if(aa != NULL && aa->value_size > 0) {
             sendbuf_add_accept_ack(to_learners, aa);
         } else {
-            LOG(DBG, ("Cannot retransmit iid:%lu no value accepted \n", aa->iid));
+            LOG(DBG, ("Cannot retransmit iid:%u no value accepted \n", aa->iid));
         }
     }
     //Flush the send buffer if there's something

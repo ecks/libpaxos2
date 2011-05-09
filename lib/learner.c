@@ -116,7 +116,7 @@ static void lea_store_accept_ack(l_inst_info * ii, short int acceptor_id, accept
 static int lea_update_state(l_inst_info * ii, short int acceptor_id, accept_ack * aa) {
     //First message for this iid
     if(ii->iid == INST_INFO_EMPTY) {
-        LOG(DBG, ("Received first message for instance:%lu\n", aa->iid));
+        LOG(DBG, ("Received first message for instance:%u\n", aa->iid));
         ii->iid = aa->iid;
         ii->last_update_ballot = aa->ballot;
     }
@@ -124,13 +124,13 @@ static int lea_update_state(l_inst_info * ii, short int acceptor_id, accept_ack 
     
     //Instance closed already, drop
     if(IS_CLOSED(ii)) {
-        LOG(DBG, ("Dropping accept_ack for iid:%lu, already closed\n", aa->iid));
+        LOG(DBG, ("Dropping accept_ack for iid:%u, already closed\n", aa->iid));
         return 0;
     }
     
     //No previous message to overwrite for this acceptor
     if(ii->acks[acceptor_id] == NULL) {
-        LOG(DBG, ("Got first ack for iid:%lu, acceptor:%d\n", \
+        LOG(DBG, ("Got first ack for iid:%u, acceptor:%d\n", \
             ii->iid, acceptor_id));
         //Save this accept_ack
         lea_store_accept_ack(ii, acceptor_id, aa);
@@ -143,12 +143,12 @@ static int lea_update_state(l_inst_info * ii, short int acceptor_id, accept_ack 
     
     //Already more recent info in the record, accept_ack is old
     if(prev_ack->ballot >= aa->ballot) {
-        LOG(DBG, ("Dropping accept_ack for iid:%lu, stored ballot is newer or equal\n", aa->iid));
+        LOG(DBG, ("Dropping accept_ack for iid:%u, stored ballot is newer or equal\n", aa->iid));
         return 0;
     }
     
     //Replace the previous ack since the received ballot is newer
-    LOG(DBG, ("Overwriting previous accept_ack for iid:%lu\n", aa->iid));
+    LOG(DBG, ("Overwriting previous accept_ack for iid:%u\n", aa->iid));
     PAX_FREE(prev_ack);
     lea_store_accept_ack(ii, acceptor_id, aa);
     ii->last_update_ballot = aa->ballot;
@@ -189,7 +189,7 @@ static int lea_check_quorum(l_inst_info * ii) {
     
     //Reached a quorum/majority!
     if(count >= QUORUM) {
-        LOG(DBG, ("Reached quorum, iid:%lu is closed!\n", ii->iid));
+        LOG(DBG, ("Reached quorum, iid:%u is closed!\n", ii->iid));
         ii->final_value = ii->acks[a_valid_index];
         
         //Keep track of highest closed
@@ -267,11 +267,11 @@ lea_hole_check(int fd, short event, void *arg) {
     //Periodic check for missing instances
     //(i.e. i+1 closed, but i not closed yet)
     if (highest_iid_seen > current_iid + LEARNER_ARRAY_SIZE) {
-        LOG(0, ("This learner is lagging behind!!!, highest seen:%lu, highest delivered:%lu\n", 
+        LOG(0, ("This learner is lagging behind!!!, highest seen:%u, highest delivered:%u\n", 
             highest_iid_seen, current_iid-1));
         lea_send_repeat_request(current_iid, highest_iid_seen);
     } else if(highest_iid_closed > current_iid) {
-        LOG(VRB, ("Out of sync, highest closed:%lu, highest delivered:%lu\n", 
+        LOG(VRB, ("Out of sync, highest closed:%u, highest delivered:%u\n", 
             highest_iid_closed, current_iid-1));
         //Ask retransmission to acceptors
         lea_send_repeat_request(current_iid, highest_iid_closed);
@@ -297,14 +297,14 @@ static void handle_accept_ack(short int acceptor_id, accept_ack * aa) {
     
     //Already closed and delivered, ignore message
     if(aa->iid < current_iid) {
-        LOG(DBG, ("Dropping accept_ack for already delivered iid:%lu\n", aa->iid));
+        LOG(DBG, ("Dropping accept_ack for already delivered iid:%u\n", aa->iid));
         return;
     }
     
     //We are late w.r.t the current iid, ignore message
     // (The instence received is too ahead and will overwrite something)
     if(aa->iid >= current_iid + LEARNER_ARRAY_SIZE) {
-        LOG(DBG, ("Dropping accept_ack for iid:%lu, too far in future\n", aa->iid));
+        LOG(DBG, ("Dropping accept_ack for iid:%u, too far in future\n", aa->iid));
         return;
     }
 
@@ -314,7 +314,7 @@ static void handle_accept_ack(short int acceptor_id, accept_ack * aa) {
     int relevant = lea_update_state(ii, acceptor_id, aa);
     if(!relevant) {
         //Not really interesting (i.e. a duplicate message)
-        LOG(DBG, ("Learner discarding learn for iid:%lu\n", aa->iid));
+        LOG(DBG, ("Learner discarding learn for iid:%u\n", aa->iid));
         return;
     }
     
@@ -322,7 +322,7 @@ static void handle_accept_ack(short int acceptor_id, accept_ack * aa) {
     // check if instance can be declared closed
     int closed = lea_check_quorum(ii);
     if(!closed) {
-        LOG(DBG, ("Not yet a quorum for iid:%lu\n", aa->iid));
+        LOG(DBG, ("Not yet a quorum for iid:%u\n", aa->iid));
         return;
     }
 

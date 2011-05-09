@@ -350,11 +350,11 @@ stablestorage_get_record(iid_t iid) {
     
     if(result == DB_NOTFOUND || result == DB_KEYEMPTY) {
         //Record does not exist
-        LOG(DBG, ("The record for iid:%lu does not exist\n", iid));
+        LOG(DBG, ("The record for iid:%u does not exist\n", iid));
         return NULL;
     } else if (result != 0) {
         //Read error!
-        printf("Error while reading record for iid:%lu : %s\n",
+        printf("Error while reading record for iid:%u : %s\n",
             iid, db_strerror(result));
         return NULL;
     }

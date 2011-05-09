@@ -45,14 +45,14 @@ static acceptor_record *
 acc_apply_accept(accept_req * ar, acceptor_record * rec) {
     //We already have a more recent ballot
     if (rec != NULL && rec->ballot < ar->ballot) {
-        LOG(DBG, ("Accept for iid:%lu dropped (ballots curr:%u recv:%u)\n", 
+        LOG(DBG, ("Accept for iid:%u dropped (ballots curr:%u recv:%u)\n", 
             ar->iid, rec->ballot, ar->ballot));
         return NULL;
     }
     
     //Record not found or smaller ballot
     // in both cases overwrite and store
-    LOG(DBG, ("Accepting for iid:%lu (ballot:%u)\n", 
+    LOG(DBG, ("Accepting for iid:%u (ballot:%u)\n", 
         ar->iid, ar->ballot));
     
     //Store the updated record
@@ -61,7 +61,7 @@ acc_apply_accept(accept_req * ar, acceptor_record * rec) {
     //Keep track of highest accepted for retransmission
     if(ar->iid > highest_accepted_iid) {
         highest_accepted_iid = ar->iid;
-        LOG(DBG, ("Highest accepted is now iid:%lu\n", 
+        LOG(DBG, ("Highest accepted is now iid:%u\n", 
             highest_accepted_iid));
     }
     return rec;
@@ -74,21 +74,21 @@ static acceptor_record *
 acc_apply_prepare(prepare_req * pr, acceptor_record * rec) {
     //We already have a more recent ballot
     if (rec != NULL && rec->ballot >= pr->ballot) {
-        LOG(DBG, ("Prepare request for iid:%lu dropped (ballots curr:%u recv:%u)\n", 
+        LOG(DBG, ("Prepare request for iid:%u dropped (ballots curr:%u recv:%u)\n", 
             pr->iid, rec->ballot, pr->ballot));
         return NULL;
     }
     
     //Stored value is final, the instance is closed already
     if (rec != NULL && rec->is_final) {
-        LOG(DBG, ("Prepare request for iid:%lu dropped \
+        LOG(DBG, ("Prepare request for iid:%u dropped \
             (stored value is final)\n", pr->iid));
         return NULL;
     }
     
     //Record not found or smaller ballot
     // in both cases overwrite and store
-    LOG(DBG, ("Prepare request is valid for iid:%lu (ballot:%u)\n", 
+    LOG(DBG, ("Prepare request is valid for iid:%u (ballot:%u)\n", 
         pr->iid, pr->ballot));
     
     //Store the updated record
@@ -130,7 +130,7 @@ acc_periodic_repeater(int fd, short event, void *arg)
     //If some value has been accepted,
     if (highest_accepted_iid > 0) {
         //Rebroadcast most recent (so that learners stay up-to-date)
-        LOG(DBG, ("re-sending most recent accept, iid:%lu\n", highest_accepted_iid));
+        LOG(DBG, ("re-sending most recent accept, iid:%u\n", highest_accepted_iid));
         acc_retransmit_latest_accept();
     }
     
@@ -253,7 +253,7 @@ handle_repeat_req_batch(repeat_req_batch* rrb) {
         if(rec != NULL && rec->value_size > 0) {
             sendbuf_add_accept_ack(to_learners, rec);
         } else {
-            LOG(DBG, ("Cannot retransmit iid:%lu no value accepted \n", rrb->requests[i]));
+            LOG(DBG, ("Cannot retransmit iid:%u no value accepted \n", rrb->requests[i]));
         }
     }
     

@@ -176,7 +176,7 @@ void print_paxos_msg(paxos_msg * msg) {
             prepare_req * pr;
             for(i = 0; i < prb->count; i++) {
                 pr = (prepare_req *) &prb->prepares[i];
-                printf("\n (%d) iid:%lu bal:%u ", 
+                printf("\n (%d) iid:%u bal:%u ", 
                     (int)i, pr->iid, pr->ballot);
             }
 
@@ -191,7 +191,7 @@ void print_paxos_msg(paxos_msg * msg) {
             prepare_ack * pa;
             for(i = 0; i < pab->count; i++) {
                 pa = (prepare_ack *) &pab->data[offset];
-                printf("\n (%p)(%d) iid:%lu bal:%u vbal:%u val_size:%lu", 
+                printf("\n (%p)(%d) iid:%u bal:%u vbal:%u val_size:%lu", 
                     (void*)pa, (int)i, pa->iid, pa->ballot, 
                     pa->value_ballot, pa->value_size);
                 offset += PREPARE_ACK_SIZE(pa);
@@ -208,7 +208,7 @@ void print_paxos_msg(paxos_msg * msg) {
             accept_req * ar;
             for(i = 0; i < arb->count; i++) {
                 ar = (accept_req *) &arb->data[offset];
-                printf("\n (%d) iid:%lu bal:%u val_size:%lu", 
+                printf("\n (%d) iid:%u bal:%u val_size:%lu", 
                     (int)i, ar->iid, ar->ballot, ar->value_size);
                 offset += ACCEPT_REQ_SIZE(ar);
             }
@@ -223,7 +223,7 @@ void print_paxos_msg(paxos_msg * msg) {
             accept_ack * aa;
             for(i = 0; i < aab->count; i++) {
                 aa = (accept_ack *) &aab->data[offset];
-                printf("\n (%d) iid:%lu bal:%u vbal:%u val_size:%lu", 
+                printf("\n (%d) iid:%u bal:%u vbal:%u val_size:%lu", 
                     (int)i, aa->iid, aa->ballot, 
                     aa->value_ballot, aa->value_size);
                 offset += ACCEPT_ACK_SIZE(aa);
@@ -236,7 +236,7 @@ void print_paxos_msg(paxos_msg * msg) {
             printf("(repeat request batch)\n");
             printf(" count:%d\n", rrb->count);
             for(i = 0; i < rrb->count; i++) {
-                printf("\n (%d) iid:%lu ", 
+                printf("\n (%d) iid:%u ", 
                     (int)i, rrb->requests[i]);
             }
         }
