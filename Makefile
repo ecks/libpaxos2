@@ -1,3 +1,5 @@
+include Makefile.conf
+
 LIBPAXOS	= libpaxos.a
 MODULES 	= lib tests
 AR			= ar
@@ -12,7 +14,7 @@ all: bdb_check libevent_check $(LIBPAXOS) $(MODULES)
 $(MODULES):	
 	$(QUIET) $(MAKE) QUIET=$(QUIET) --directory=$@ || exit 1;
 	@echo "Done in $@/"
-	
+
 $(LIBPAXOS): lib 
 	$(QUIET) $(AR) $(ARFLAGS) $@ $(addsuffix /*.o, $^)
 	$(QUIET) ranlib $@
@@ -24,7 +26,7 @@ bdb_check:
 	echo "You must build BDB and update the BDB_DIR variable in Makefile.inc before proceeding"; \
 	exit 1; \
 	fi
-	
+
 libevent_check:
 	$(QUIET) if [ ! -e $(LEV_DIR) ]; then \
 	echo "Error: LibEvent not found in $(LEV_DIR)"; \
