@@ -65,7 +65,7 @@ Download Libevent source from http://monkey.org/~provos/libevent-1.4.12-stable.t
 Extract it to some folder (i.e. ~/libevent) and follow the instructions included to compile (i.e. on unix-like: cd ~/libevent && ./configure && make).
 ~/libevent/ should now contain the file libevent.a
 
-Update Makefile.inc in the main libpaxos directory to reflect the location of the library and header files for the two libraries.
+Update Makefile.conf in the main libpaxos directory to reflect the location of the library and header files for the two libraries.
 For example:
 BDB_DIR		= $(HOME)/bdb/build_unix
 LEV_DIR		= $(HOME)/libevent

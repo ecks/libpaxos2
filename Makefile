@@ -23,14 +23,14 @@ $(LIBPAXOS): lib
 bdb_check:
 	$(QUIET) if [ ! -e $(BDB_DIR) ]; then \
 	echo "Error: Berkeley DB not found in $(BDB_DIR)"; \
-	echo "You must build BDB and update the BDB_DIR variable in Makefile.inc before proceeding"; \
+	echo "You must build BDB and update the BDB_DIR variable in Makefile.conf before proceeding"; \
 	exit 1; \
 	fi
 
 libevent_check:
 	$(QUIET) if [ ! -e $(LEV_DIR) ]; then \
 	echo "Error: LibEvent not found in $(LEV_DIR)"; \
-	echo "You must build LibEvent and update the LEV_DIR variable in Makefile.inc before proceeding"; \
+	echo "You must build LibEvent and update the LEV_DIR variable in Makefile.conf before proceeding"; \
 	exit 1; \
 	fi
 
